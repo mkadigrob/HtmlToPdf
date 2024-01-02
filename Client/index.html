@@ -1,0 +1,93 @@
+<html>
+    <head>
+        <style type="text/css">
+            .content {
+                width: 800px;
+                margin: 0 auto;
+            }
+            .top-menu {
+                display: flex;
+                justify-content: space-between;
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+                padding-bottom: 5px;
+            }
+            .files-container {
+                border: 1px solid black;
+                border-left: none;
+                border-right: none;
+                padding: 5 0;
+            }
+            .file-list-empty {
+                color: lightgrey;
+            }
+            .file-list {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+            .file-item {
+                display: flex;
+                padding-top: 5px;
+            }
+            .file-item-block {
+                margin-right: 5px;
+            }
+            .file-item-name {
+                display: inline-block;
+                width: 100%;
+                border: none;
+            }
+            .total {
+                padding-top: 5px;
+            }
+        </style>
+        <script src="vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script type="application/javascript">
+            var serviceUrl = "http://localhost:5193";
+            
+            function download(data, filename) {
+                var file = new Blob([data]);
+                var url = URL.createObjectURL(file);
+                var a = document.createElement("a");                
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function() {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);  
+                }, 0);
+            }
+        </script>
+    </head>
+    <body>
+        <div id="app" class="content">
+            <ul class="top-menu">
+                <li>
+                    <div>
+                        <input ref="file" type="file" multiple="true" 
+                            v-on:change="submitFiles" />
+                    </div>
+                </li>
+                <li>
+                    <button v-on:click="clearItems">
+                        Clear
+                    </button>
+                </li>
+            </ul>
+            <div class="files-container">
+                <vue-file-list 
+                    v-bind:items="items"
+                    v-on:download="downloadItem"
+                    v-on:delete="deleteItem" />
+            </div>
+            <div class="total">
+                Total count: {{items.length}}
+            </div>
+        </div>
+        <script src="index.js"></script>
+    </body>
+</html>
